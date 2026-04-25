@@ -3,3 +3,4 @@ osmosis
 *.pbf
 .venv
 allmaps/*
+**/.ipynb_checkpoints/

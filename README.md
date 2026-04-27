@@ -1,5 +1,9 @@
 # Last Map Update: Wed Apr 27 12:00:51 UTC 2026
 
+**NOTE: If you are coming up to this repo to get maps for all Canada, be advised that you probably want to crop the maps like I did for Quebec province because the files are huge!**
+
+For Quebecers, I'm currently running these cropped maps (streets + names + water + green stuff): https://github.com/michellemay/BSC300-Maps-Canada/actions/runs/25003063229/artifacts/6664836109
+
 # [Map Downloads here](https://github.com/manujedi/BSC300-Maps/actions) _(you need to be logged in to github)_
 
 direct links:

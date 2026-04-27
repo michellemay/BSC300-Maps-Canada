@@ -31,7 +31,7 @@ jobs:
             {name: nunavut, url: https://download.geofabrik.de/north-america/canada/nunavut-latest.osm.pbf, state: "0800"},
             {name: ontario, url: https://download.geofabrik.de/north-america/canada/ontario-latest.osm.pbf, state: "0900"},
             {name: prince-edward-island, url: https://download.geofabrik.de/north-america/canada/prince-edward-island-latest.osm.pbf, state: "1000"},
-            {name: quebec, url: https://download.geofabrik.de/north-america/canada/quebec-latest.osm.pbf, state: "1100"},
+            {name: quebec, url: https://download.geofabrik.de/north-america/canada/quebec-latest.osm.pbf, state: "1100", poly: "quebec.poly"},
             {name: saskatchewan, url: https://download.geofabrik.de/north-america/canada/saskatchewan-latest.osm.pbf, state: "1200"},
             {name: yukon, url: https://download.geofabrik.de/north-america/canada/yukon-latest.osm.pbf, state: "1300"},
           ]
@@ -71,7 +71,7 @@ jobs:
       - name: filter
         run: |
           osmosis/osmfilter -v tmp.o5m \
-          --keep="highway=primary =primary_link =secondary =secondary_link =tertiary =tertiary_link =trunk =trunk_link =cycleway =living_street =residential =road =track =unclassified" \
+          --keep="highway=motorway =motorway_link =primary =primary_link =secondary =secondary_link =tertiary =tertiary_link =trunk =trunk_link =cycleway =living_street =residential =road =track =unclassified" \
           --keep="highway=service and ( bicycle=designated or bicycle=yes or bicycle=permissive )" \
           --keep="highway=footway and ( bicycle=designated or bicycle=yes or bicycle=permissive )" \
           --keep="highway=bridleway and ( bicycle=designated or bicycle=yes or bicycle=permissive )" \
@@ -87,6 +87,7 @@ jobs:
           --out-o5m > tmp1.o5m
 
           osmosis/osmfilter -v tmp1.o5m --modify-tags=" \
+          highway=motorway_link to =motorway 
           highway=trunk_link to =primary \
           highway=trunk to =primary \
           highway=primary_link to =primary \
@@ -103,6 +104,12 @@ jobs:
           --drop-author --drop-version --out-o5m > tmp_filtered.o5m
 
           rm tmp.o5m tmp1.o5m
+
+      - name: Crop to polygon
+        if: matrix.maps.poly != ''
+        run: |
+          ./osmosis/osmconvert tmp_filtered.o5m -B=${{ matrix.maps.poly }} --complete-ways -o=tmp_cropped.o5m
+          mv tmp_cropped.o5m tmp_filtered.o5m
 
       - name: Convert for osmosis 
         run: |
@@ -138,7 +145,7 @@ jobs:
             {name: nunavut, url: https://download.geofabrik.de/north-america/canada/nunavut-latest.osm.pbf, state: "0800"},
             {name: ontario, url: https://download.geofabrik.de/north-america/canada/ontario-latest.osm.pbf, state: "0900"},
             {name: prince-edward-island, url: https://download.geofabrik.de/north-america/canada/prince-edward-island-latest.osm.pbf, state: "1000"},
-            {name: quebec, url: https://download.geofabrik.de/north-america/canada/quebec-latest.osm.pbf, state: "1100"},
+            {name: quebec, url: https://download.geofabrik.de/north-america/canada/quebec-latest.osm.pbf, state: "1100", poly: "quebec.poly"},
             {name: saskatchewan, url: https://download.geofabrik.de/north-america/canada/saskatchewan-latest.osm.pbf, state: "1200"},
             {name: yukon, url: https://download.geofabrik.de/north-america/canada/yukon-latest.osm.pbf, state: "1300"},
           ]
@@ -178,7 +185,7 @@ jobs:
       - name: filter
         run: |
           osmosis/osmfilter -v tmp.o5m \
-          --keep="highway=primary =primary_link =secondary =secondary_link =tertiary =tertiary_link =trunk =trunk_link =cycleway =living_street =residential =road =track =unclassified" \
+          --keep="highway=motorway =motorway_link =primary =primary_link =secondary =secondary_link =tertiary =tertiary_link =trunk =trunk_link =cycleway =living_street =residential =road =track =unclassified" \
           --keep="highway=service and ( bicycle=designated or bicycle=yes or bicycle=permissive )" \
           --keep="highway=footway and ( bicycle=designated or bicycle=yes or bicycle=permissive )" \
           --keep="highway=bridleway and ( bicycle=designated or bicycle=yes or bicycle=permissive )" \
@@ -193,6 +200,7 @@ jobs:
           --out-o5m > tmp1.o5m
 
           osmosis/osmfilter -v tmp1.o5m --modify-tags=" \
+          highway=motorway_link to =motorway 
           highway=trunk_link to =primary \
           highway=trunk to =primary \
           highway=primary_link to =primary \
@@ -209,6 +217,12 @@ jobs:
           --drop-author --drop-version --out-o5m > tmp_filtered.o5m
 
           rm tmp.o5m tmp1.o5m
+
+      - name: Crop to polygon
+        if: matrix.maps.poly != ''
+        run: |
+          ./osmosis/osmconvert tmp_filtered.o5m -B=${{ matrix.maps.poly }} --complete-ways -o=tmp_cropped.o5m
+          mv tmp_cropped.o5m tmp_filtered.o5m
 
       - name: Convert for osmosis 
         run: |
@@ -244,7 +258,7 @@ jobs:
             {name: nunavut, url: https://download.geofabrik.de/north-america/canada/nunavut-latest.osm.pbf, state: "0800"},
             {name: ontario, url: https://download.geofabrik.de/north-america/canada/ontario-latest.osm.pbf, state: "0900"},
             {name: prince-edward-island, url: https://download.geofabrik.de/north-america/canada/prince-edward-island-latest.osm.pbf, state: "1000"},
-            {name: quebec, url: https://download.geofabrik.de/north-america/canada/quebec-latest.osm.pbf, state: "1100"},
+            {name: quebec, url: https://download.geofabrik.de/north-america/canada/quebec-latest.osm.pbf, state: "1100", poly: "quebec.poly"},
             {name: saskatchewan, url: https://download.geofabrik.de/north-america/canada/saskatchewan-latest.osm.pbf, state: "1200"},
             {name: yukon, url: https://download.geofabrik.de/north-america/canada/yukon-latest.osm.pbf, state: "1300"},
           ]
@@ -284,7 +298,7 @@ jobs:
       - name: filter
         run: |
           osmosis/osmfilter -v tmp.o5m \
-          --keep="highway=primary =primary_link =secondary =secondary_link =tertiary =tertiary_link =trunk =trunk_link =cycleway =living_street =residential =road =track =unclassified" \
+          --keep="highway=motorway =motorway_link =primary =primary_link =secondary =secondary_link =tertiary =tertiary_link =trunk =trunk_link =cycleway =living_street =residential =road =track =unclassified" \
           --keep="highway=service and ( bicycle=designated or bicycle=yes or bicycle=permissive )" \
           --keep="highway=footway and ( bicycle=designated or bicycle=yes or bicycle=permissive )" \
           --keep="highway=bridleway and ( bicycle=designated or bicycle=yes or bicycle=permissive )" \
@@ -301,6 +315,7 @@ jobs:
           --out-o5m > tmp1.o5m
 
           osmosis/osmfilter -v tmp1.o5m --modify-tags=" \
+          highway=motorway_link to =motorway 
           highway=trunk_link to =primary \
           highway=trunk to =primary \
           highway=primary_link to =primary \
@@ -317,6 +332,12 @@ jobs:
           --drop-author --drop-version --out-o5m > tmp_filtered.o5m
 
           rm tmp.o5m tmp1.o5m
+
+      - name: Crop to polygon
+        if: matrix.maps.poly != ''
+        run: |
+          ./osmosis/osmconvert tmp_filtered.o5m -B=${{ matrix.maps.poly }} --complete-ways -o=tmp_cropped.o5m
+          mv tmp_cropped.o5m tmp_filtered.o5m
 
       - name: Convert for osmosis 
         run: |
@@ -352,7 +373,7 @@ jobs:
             {name: nunavut, url: https://download.geofabrik.de/north-america/canada/nunavut-latest.osm.pbf, state: "0800"},
             {name: ontario, url: https://download.geofabrik.de/north-america/canada/ontario-latest.osm.pbf, state: "0900"},
             {name: prince-edward-island, url: https://download.geofabrik.de/north-america/canada/prince-edward-island-latest.osm.pbf, state: "1000"},
-            {name: quebec, url: https://download.geofabrik.de/north-america/canada/quebec-latest.osm.pbf, state: "1100"},
+            {name: quebec, url: https://download.geofabrik.de/north-america/canada/quebec-latest.osm.pbf, state: "1100", poly: "quebec.poly"},
             {name: saskatchewan, url: https://download.geofabrik.de/north-america/canada/saskatchewan-latest.osm.pbf, state: "1200"},
             {name: yukon, url: https://download.geofabrik.de/north-america/canada/yukon-latest.osm.pbf, state: "1300"},
           ]
@@ -392,7 +413,7 @@ jobs:
       - name: filter
         run: |
           osmosis/osmfilter -v tmp.o5m \
-          --keep="highway=primary =primary_link =secondary =secondary_link =tertiary =tertiary_link =trunk =trunk_link =cycleway =living_street =residential =road =track =unclassified" \
+          --keep="highway=motorway =motorway_link =primary =primary_link =secondary =secondary_link =tertiary =tertiary_link =trunk =trunk_link =cycleway =living_street =residential =road =track =unclassified" \
           --keep="highway=service and ( bicycle=designated or bicycle=yes or bicycle=permissive )" \
           --keep="highway=footway and ( bicycle=designated or bicycle=yes or bicycle=permissive )" \
           --keep="highway=bridleway and ( bicycle=designated or bicycle=yes or bicycle=permissive )" \
@@ -408,6 +429,7 @@ jobs:
           --out-o5m > tmp1.o5m
 
           osmosis/osmfilter -v tmp1.o5m --modify-tags=" \
+          highway=motorway_link to =motorway 
           highway=trunk_link to =primary \
           highway=trunk to =primary \
           highway=primary_link to =primary \
@@ -439,6 +461,12 @@ jobs:
           --drop-author --drop-version --out-o5m > tmp_filtered.o5m
 
           rm tmp.o5m tmp1.o5m
+
+      - name: Crop to polygon
+        if: matrix.maps.poly != ''
+        run: |
+          ./osmosis/osmconvert tmp_filtered.o5m -B=${{ matrix.maps.poly }} --complete-ways -o=tmp_cropped.o5m
+          mv tmp_cropped.o5m tmp_filtered.o5m
 
       - name: Convert for osmosis 
         run: |
